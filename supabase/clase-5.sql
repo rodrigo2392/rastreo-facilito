@@ -19,4 +19,21 @@ on storage.objects for insert to authenticated
 with check (bucket_id = 'entregas' and public.es_tienda());
 
 
--- La parte 2 (el bucket privado) se escribe en el bloque 2.
+-- PARTE 2 (bloque 2): el bucket privado
+
+-- El bucket deja de ser público. Ojo: una liga pública que ya se abrió puede seguir
+-- sirviendo hasta una hora, porque quedó en el caché.
+update storage.buckets set public = false where id = 'entregas';
+
+-- Ves la foto si puedes ver su pedido. La carpeta de cada foto es el número
+-- de su pedido (por ejemplo 12/foto.jpeg), y las reglas de la clase 2
+-- deciden qué pedidos ve cada quien.
+create policy "Ves la foto si puedes ver el pedido"
+on storage.objects for select to authenticated
+using (
+  bucket_id = 'entregas'
+  and exists (
+    select 1 from public.pedidos
+    where pedidos.id::text = (storage.foldername(name))[1]
+  )
+);
