@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { salir } from "@/app/login/acciones";
+import EnVivo from "@/components/EnVivo";
 import FormularioPedido from "@/components/FormularioPedido";
 import TarjetaPedido from "@/components/TarjetaPedido";
 import type { Pedido } from "@/lib/pedidos";
@@ -47,6 +48,9 @@ export default async function Inicio() {
           </button>
         </form>
       </header>
+
+      {/* Clase 3: cuando cambia un pedido, la página se actualiza sola. */}
+      <EnVivo />
 
       {!esTienda && <FormularioPedido />}
 
