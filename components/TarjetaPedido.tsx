@@ -2,7 +2,13 @@ import { cambiarEstado } from "@/app/acciones";
 import { NOMBRE_ESTADO, siguienteEstado, type Pedido } from "@/lib/pedidos";
 import EtiquetaEstado from "./EtiquetaEstado";
 
-export default function TarjetaPedido({ pedido }: { pedido: Pedido }) {
+export default function TarjetaPedido({
+  pedido,
+  puedeCambiarEstado,
+}: {
+  pedido: Pedido;
+  puedeCambiarEstado: boolean;
+}) {
   const siguiente = siguienteEstado(pedido.estado);
   const hora = new Date(pedido.created_at).toLocaleTimeString("es-MX", {
     hour: "2-digit",
@@ -24,7 +30,7 @@ export default function TarjetaPedido({ pedido }: { pedido: Pedido }) {
         {pedido.direccion} · {pedido.telefono}
       </p>
 
-      {siguiente && (
+      {puedeCambiarEstado && siguiente && (
         <form action={cambiarEstado} className="mt-4">
           <input type="hidden" name="id" value={pedido.id} />
           <input type="hidden" name="estado" value={siguiente} />

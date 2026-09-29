@@ -9,11 +9,11 @@ export default function FormularioPedido() {
       action={crearPedido}
       className="grid gap-3 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"
     >
-      <h2 className="text-lg font-semibold">Nuevo pedido</h2>
+      <h2 className="text-lg font-semibold">Haz tu pedido</h2>
       <input
         name="descripcion"
         required
-        placeholder="¿Qué pidió? Ej. 3 tacos al pastor y una horchata"
+        placeholder="¿Qué vas a pedir? Ej. 3 tacos al pastor y una horchata"
         className={campo}
       />
       <input name="direccion" required placeholder="Dirección" className={campo} />

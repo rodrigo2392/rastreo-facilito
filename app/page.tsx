@@ -1,3 +1,4 @@
+import { salir } from "@/app/login/acciones";
 import FormularioPedido from "@/components/FormularioPedido";
 import TarjetaPedido from "@/components/TarjetaPedido";
 import type { Pedido } from "@/lib/pedidos";
@@ -16,9 +17,16 @@ export default async function Inicio() {
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-10">
-      <header className="mb-8">
-        <p className="text-sm font-semibold text-orange-600">Fonda La Esquina</p>
-        <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
+      <header className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-orange-600">Fonda La Esquina</p>
+          <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
+        </div>
+        <form action={salir}>
+          <button className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100">
+            Salir
+          </button>
+        </form>
       </header>
 
       <FormularioPedido />
@@ -33,7 +41,8 @@ export default async function Inicio() {
 
       <ul className="mt-8 grid gap-4">
         {pedidos.map((pedido) => (
-          <TarjetaPedido key={pedido.id} pedido={pedido} />
+          // Por ahora cualquiera cambia el estado; en el bloque 2 solo la tienda.
+          <TarjetaPedido key={pedido.id} pedido={pedido} puedeCambiarEstado={true} />
         ))}
       </ul>
 
