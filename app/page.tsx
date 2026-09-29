@@ -1,38 +1,19 @@
 import FormularioPedido from "@/components/FormularioPedido";
 import TarjetaPedido from "@/components/TarjetaPedido";
 import type { Pedido } from "@/lib/pedidos";
+import { createClient } from "@/lib/supabase/server";
 
-// Pedidos de ejemplo escritos en el código: no se guardan en ningún lado,
-// así que un pedido nuevo no lo ve nadie más.
-// En la clase 1 los cambiamos por una consulta a la tabla de Supabase.
-const pedidos: Pedido[] = [
-  {
-    id: 3,
-    created_at: "2026-10-14T19:20:00Z",
-    descripcion: "Pozole grande para llevar",
-    direccion: "Calle Allende 12, Col. Roma",
-    telefono: "55 2468 1357",
-    estado: "en_camino",
-  },
-  {
-    id: 2,
-    created_at: "2026-10-14T19:10:00Z",
-    descripcion: "Orden de quesadillas y un refresco",
-    direccion: "Av. Hidalgo 210, Col. Juárez",
-    telefono: "55 8765 4321",
-    estado: "preparando",
-  },
-  {
-    id: 1,
-    created_at: "2026-10-14T19:05:00Z",
-    descripcion: "3 tacos al pastor y una horchata",
-    direccion: "Calle Morelos 45, Centro",
-    telefono: "55 1234 5678",
-    estado: "recibido",
-  },
-];
+// Server Component: corre en el servidor y consulta los pedidos en Supabase
+// antes de mandar el HTML al navegador.
+export default async function Inicio() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("pedidos")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-export default function Inicio() {
+  const pedidos: Pedido[] = data ?? [];
+
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-10">
       <header className="mb-8">
@@ -42,11 +23,23 @@ export default function Inicio() {
 
       <FormularioPedido />
 
+      {error && (
+        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">
+          <p className="font-semibold">Supabase respondió con un error</p>
+          <p className="mt-1">{error.message}</p>
+          {error.hint && <p className="mt-1">Pista: {error.hint}</p>}
+        </div>
+      )}
+
       <ul className="mt-8 grid gap-4">
         {pedidos.map((pedido) => (
           <TarjetaPedido key={pedido.id} pedido={pedido} />
         ))}
       </ul>
+
+      {!error && pedidos.length === 0 && (
+        <p className="mt-8 text-center text-zinc-500">Todavía no hay pedidos.</p>
+      )}
     </main>
   );
 }
