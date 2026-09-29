@@ -23,11 +23,13 @@ export default async function Inicio() {
     .maybeSingle();
   const esTienda = perfil?.rol === "tienda";
 
-  // La base solo regresa los pedidos que sus reglas te dejan ver.
+  // La base solo regresa los pedidos que sus reglas te dejan ver,
+  // cada uno con su historial (clase 6) en orden de hora.
   const { data, error } = await supabase
     .from("pedidos")
-    .select("*")
-    .order("created_at", { ascending: false });
+    .select("*, historial(id, estado, created_at)")
+    .order("created_at", { ascending: false })
+    .order("created_at", { referencedTable: "historial", ascending: true });
 
   const pedidos: Pedido[] = data ?? [];
 
