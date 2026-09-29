@@ -44,8 +44,27 @@ export async function cambiarEstado(formData: FormData) {
 }
 
 // Clase 5: la tienda sube la foto de entrega de un pedido.
-// Por ahora solo enseña en la terminal la foto que llegó; en la clase la guardamos en Supabase.
 export async function subirFotoEntrega(formData: FormData) {
+  const supabase = await createClient();
+  const id = Number(formData.get("id"));
   const foto = formData.get("foto") as File;
-  console.log("Llegó una foto:", foto.name, foto.size, "bytes");
+
+  // Cada foto va en la carpeta de su pedido, por ejemplo 12/1759000000000.jpeg
+  const ruta = `${id}/${Date.now()}.${foto.type.split("/")[1]}`;
+
+  const { error } = await supabase.storage
+    .from("entregas")
+    .upload(ruta, foto, { contentType: foto.type });
+
+  if (error) throw new Error(error.message);
+
+  // El pedido guarda dónde quedó su foto.
+  const { error: errorPedido } = await supabase
+    .from("pedidos")
+    .update({ foto_entrega: ruta })
+    .eq("id", id);
+
+  if (errorPedido) throw new Error(errorPedido.message);
+
+  revalidatePath("/");
 }

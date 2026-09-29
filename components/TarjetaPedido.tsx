@@ -2,6 +2,7 @@ import { cambiarEstado, subirFotoEntrega } from "@/app/acciones";
 import { NOMBRE_ESTADO, siguienteEstado, type Pedido } from "@/lib/pedidos";
 import BarraProgreso from "./BarraProgreso";
 import EtiquetaEstado from "./EtiquetaEstado";
+import FotoEntrega from "./FotoEntrega";
 
 export default function TarjetaPedido({
   pedido,
@@ -46,6 +47,8 @@ export default function TarjetaPedido({
       )}
 
       {/* Clase 5: la foto de entrega. */}
+      {pedido.foto_entrega && <FotoEntrega ruta={pedido.foto_entrega} />}
+
       {puedeSubirFoto && (
         <form action={subirFotoEntrega} className="mt-4 flex flex-wrap items-center gap-3">
           <input type="hidden" name="id" value={pedido.id} />

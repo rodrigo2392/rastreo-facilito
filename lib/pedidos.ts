@@ -20,6 +20,7 @@ export type Pedido = {
   telefono: string;
   estado: Estado;
   cliente_id: string | null; // desde la clase 2: quién hizo el pedido
+  foto_entrega: string | null; // desde la clase 5: dónde quedó la foto de entrega
 };
 
 // El estado que sigue, o null si el pedido ya se entregó.
