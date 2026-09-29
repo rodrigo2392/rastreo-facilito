@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { salir } from "@/app/login/acciones";
+import EnLinea from "@/components/EnLinea";
 import EnVivo from "@/components/EnVivo";
 import FormularioPedido from "@/components/FormularioPedido";
 import TarjetaPedido from "@/components/TarjetaPedido";
@@ -41,6 +42,7 @@ export default async function Inicio() {
           <p className="mt-1 text-sm text-zinc-500">
             {perfil?.nombre || sesion.claims.email} · {esTienda ? "Tienda" : "Cliente"}
           </p>
+          <EnLinea soyTienda={esTienda} />
         </div>
         <form action={salir}>
           <button className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100">
@@ -50,7 +52,7 @@ export default async function Inicio() {
       </header>
 
       {/* Clase 3: cuando cambia un pedido, la página se actualiza sola. */}
-      <EnVivo />
+      <EnVivo conSonido={esTienda} />
 
       {!esTienda && <FormularioPedido />}
 

@@ -3,10 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { sonarDing } from "@/lib/sonido";
 
 // Se suscribe a los cambios de la tabla de pedidos (Realtime) y, cuando llega uno,
 // vuelve a renderizar la página con router.refresh(). El componente regresa null.
-export default function EnVivo() {
+export default function EnVivo({ conSonido }: { conSonido: boolean }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export default function EnVivo() {
           { event: "*", schema: "public", table: "pedidos" },
           (aviso) => {
             console.log("Llegó un aviso:", aviso);
+            if (conSonido && aviso.eventType === "INSERT") sonarDing();
             router.refresh();
           }
         )
@@ -42,7 +44,7 @@ export default function EnVivo() {
       sigoAqui = false;
       if (canal) supabase.removeChannel(canal);
     };
-  }, [router]);
+  }, [conSonido, router]);
 
   return null;
 }
