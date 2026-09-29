@@ -1,5 +1,6 @@
 import { cambiarEstado } from "@/app/acciones";
 import { NOMBRE_ESTADO, siguienteEstado, type Pedido } from "@/lib/pedidos";
+import BarraProgreso from "./BarraProgreso";
 import EtiquetaEstado from "./EtiquetaEstado";
 
 export default function TarjetaPedido({
@@ -29,6 +30,8 @@ export default function TarjetaPedido({
       <p className="mt-1 text-sm text-zinc-600">
         {pedido.direccion} · {pedido.telefono}
       </p>
+
+      {!puedeCambiarEstado && <BarraProgreso estado={pedido.estado} />}
 
       {puedeCambiarEstado && siguiente && (
         <form action={cambiarEstado} className="mt-4">
