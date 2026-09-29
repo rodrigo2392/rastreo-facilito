@@ -14,6 +14,14 @@ export default async function Inicio() {
   const { data: sesion } = await supabase.auth.getClaims();
   if (!sesion) redirect("/login");
 
+  const { data: perfil } = await supabase
+    .from("perfiles")
+    .select("nombre, rol")
+    .eq("id", sesion.claims.sub)
+    .maybeSingle();
+  const esTienda = perfil?.rol === "tienda";
+
+  // La base solo regresa los pedidos que sus reglas te dejan ver.
   const { data, error } = await supabase
     .from("pedidos")
     .select("*")
@@ -26,8 +34,12 @@ export default async function Inicio() {
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-orange-600">Fonda La Esquina</p>
-          <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
-          <p className="mt-1 text-sm text-zinc-500">{sesion.claims.email}</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {esTienda ? "Pedidos" : "Mis pedidos"}
+          </h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            {perfil?.nombre || sesion.claims.email} · {esTienda ? "Tienda" : "Cliente"}
+          </p>
         </div>
         <form action={salir}>
           <button className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100">
@@ -36,7 +48,7 @@ export default async function Inicio() {
         </form>
       </header>
 
-      <FormularioPedido />
+      {!esTienda && <FormularioPedido />}
 
       {error && (
         <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">
@@ -48,13 +60,14 @@ export default async function Inicio() {
 
       <ul className="mt-8 grid gap-4">
         {pedidos.map((pedido) => (
-          // Por ahora cualquiera cambia el estado; en el bloque 2 solo la tienda.
-          <TarjetaPedido key={pedido.id} pedido={pedido} puedeCambiarEstado={true} />
+          <TarjetaPedido key={pedido.id} pedido={pedido} puedeCambiarEstado={esTienda} />
         ))}
       </ul>
 
       {!error && pedidos.length === 0 && (
-        <p className="mt-8 text-center text-zinc-500">Todavía no hay pedidos.</p>
+        <p className="mt-8 text-center text-zinc-500">
+          {esTienda ? "Todavía no hay pedidos." : "Todavía no tienes pedidos."}
+        </p>
       )}
     </main>
   );

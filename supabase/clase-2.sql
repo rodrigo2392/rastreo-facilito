@@ -65,7 +65,32 @@ grant execute on function public.es_tienda() to authenticated;
 
 
 -- PARTE 2 (bloque 2, en vivo): RLS
--- Se escribe en vivo en la clase.
+
+-- 1. Cada pedido ahora tiene dueño: quien lo hizo. La base lo llena sola.
+alter table public.pedidos
+  add column cliente_id uuid references public.perfiles on delete cascade default auth.uid();
+
+-- 2. Se activa RLS. Sin políticas, nadie ve nada, ni la tienda.
+alter table public.pedidos enable row level security;
+
+-- 3. Las reglas, primero en español:
+--    el cliente ve sus pedidos y la tienda ve todos;
+--    el cliente hace pedidos a su nombre;
+--    solo la tienda cambia el estado.
+create policy "El cliente ve sus pedidos y la tienda ve todos"
+on public.pedidos for select to authenticated
+using (cliente_id = auth.uid() or public.es_tienda());
+
+create policy "El cliente hace pedidos a su nombre"
+on public.pedidos for insert to authenticated
+with check (cliente_id = auth.uid());
+
+create policy "Solo la tienda cambia el estado"
+on public.pedidos for update to authenticated
+using (public.es_tienda());
+
+-- Permiso para que las cuentas con sesión entren a la tabla.
+grant select, insert, update on public.pedidos to authenticated;
 
 
 -- PARTE 3 (bloque 2, viene hecha): la cuenta de la tienda
