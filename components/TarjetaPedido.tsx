@@ -1,8 +1,10 @@
 import { cambiarEstado, subirFotoEntrega } from "@/app/acciones";
-import { NOMBRE_ESTADO, siguienteEstado, type Pedido } from "@/lib/pedidos";
+import { NOMBRE_ESTADO, horaMexico, siguienteEstado, type Pedido } from "@/lib/pedidos";
 import BarraProgreso from "./BarraProgreso";
 import EtiquetaEstado from "./EtiquetaEstado";
 import FotoEntrega from "./FotoEntrega";
+import LineaDeTiempo from "./LineaDeTiempo";
+import Simulador from "./Simulador";
 
 export default function TarjetaPedido({
   pedido,
@@ -12,19 +14,14 @@ export default function TarjetaPedido({
   puedeCambiarEstado: boolean;
 }) {
   const siguiente = siguienteEstado(pedido.estado);
-  const puedeSubirFoto =
-    puedeCambiarEstado && (pedido.estado === "en_camino" || pedido.estado === "entregado");
-  const hora = new Date(pedido.created_at).toLocaleTimeString("es-MX", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "America/Mexico_City",
-  });
+  const enCamino = pedido.estado === "en_camino";
+  const puedeSubirFoto = puedeCambiarEstado && (enCamino || pedido.estado === "entregado");
 
   return (
     <li className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <span className="text-sm text-zinc-500">
-          Pedido {pedido.id} · {hora}
+          Pedido {pedido.id} · {horaMexico(pedido.created_at)}
         </span>
         <EtiquetaEstado estado={pedido.estado} />
       </div>
@@ -36,6 +33,9 @@ export default function TarjetaPedido({
 
       {!puedeCambiarEstado && <BarraProgreso estado={pedido.estado} />}
 
+      {/* Clase 6: el rastreo que la base anota sola. */}
+      <LineaDeTiempo historial={pedido.historial ?? []} />
+
       {puedeCambiarEstado && siguiente && (
         <form action={cambiarEstado} className="mt-4">
           <input type="hidden" name="id" value={pedido.id} />
@@ -45,6 +45,9 @@ export default function TarjetaPedido({
           </button>
         </form>
       )}
+
+      {/* Clase 6: la moto en el mapa. La tienda hace de repartidor; el cliente la sigue. */}
+      {enCamino && puedeCambiarEstado && <Simulador pedidoId={pedido.id} />}
 
       {/* Clase 5: la foto de entrega. */}
       {pedido.foto_entrega && <FotoEntrega ruta={pedido.foto_entrega} />}
