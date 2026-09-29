@@ -16,10 +16,9 @@ export default function FormularioPedido() {
         placeholder="¿Qué vas a pedir? Ej. 3 tacos al pastor y una horchata"
         className={campo}
       />
-      <input name="direccion" required placeholder="Dirección" className={campo} />
-      <input name="telefono" type="tel" required placeholder="Teléfono" className={campo} />
+      <p className="text-sm text-zinc-500">Te lo llevamos a la dirección de tu cuenta.</p>
       <button className="rounded-xl bg-orange-600 px-4 py-3 font-semibold text-white hover:bg-orange-500">
-        Agregar pedido
+        Hacer pedido
       </button>
     </form>
   );

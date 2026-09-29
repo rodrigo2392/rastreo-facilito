@@ -9,10 +9,19 @@ import { createClient } from "@/lib/supabase/server";
 export async function crearPedido(formData: FormData) {
   const supabase = await createClient();
 
+  // La dirección y el teléfono los dio el cliente al registrarse.
+  // No hace falta decir de quién es el perfil: la base solo te deja ver el tuyo.
+  const { data: perfil, error: errorPerfil } = await supabase
+    .from("perfiles")
+    .select("direccion, telefono")
+    .single();
+
+  if (errorPerfil) throw new Error(errorPerfil.message);
+
   const { error } = await supabase.from("pedidos").insert({
     descripcion: String(formData.get("descripcion")),
-    direccion: String(formData.get("direccion")),
-    telefono: String(formData.get("telefono")),
+    direccion: perfil.direccion,
+    telefono: perfil.telefono,
   });
 
   if (error) throw new Error(error.message);

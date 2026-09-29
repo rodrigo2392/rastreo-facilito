@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { salir } from "@/app/login/acciones";
 import FormularioPedido from "@/components/FormularioPedido";
 import TarjetaPedido from "@/components/TarjetaPedido";
@@ -8,6 +9,11 @@ import { createClient } from "@/lib/supabase/server";
 // antes de mandar el HTML al navegador.
 export default async function Inicio() {
   const supabase = await createClient();
+
+  // Sin sesión válida, redirige a /login.
+  const { data: sesion } = await supabase.auth.getClaims();
+  if (!sesion) redirect("/login");
+
   const { data, error } = await supabase
     .from("pedidos")
     .select("*")
@@ -21,6 +27,7 @@ export default async function Inicio() {
         <div>
           <p className="text-sm font-semibold text-orange-600">Fonda La Esquina</p>
           <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
+          <p className="mt-1 text-sm text-zinc-500">{sesion.claims.email}</p>
         </div>
         <form action={salir}>
           <button className="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100">
