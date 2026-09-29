@@ -4,6 +4,7 @@ import BarraProgreso from "./BarraProgreso";
 import EtiquetaEstado from "./EtiquetaEstado";
 import FotoEntrega from "./FotoEntrega";
 import LineaDeTiempo from "./LineaDeTiempo";
+import SeguirMoto from "./SeguirMoto";
 import Simulador from "./Simulador";
 
 export default function TarjetaPedido({
@@ -47,7 +48,7 @@ export default function TarjetaPedido({
       )}
 
       {/* Clase 6: la moto en el mapa. La tienda hace de repartidor; el cliente la sigue. */}
-      {enCamino && puedeCambiarEstado && <Simulador pedidoId={pedido.id} />}
+      {enCamino && (puedeCambiarEstado ? <Simulador pedidoId={pedido.id} /> : <SeguirMoto pedidoId={pedido.id} />)}
 
       {/* Clase 5: la foto de entrega. */}
       {pedido.foto_entrega && <FotoEntrega ruta={pedido.foto_entrega} />}

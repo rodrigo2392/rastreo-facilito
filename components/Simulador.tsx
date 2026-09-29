@@ -35,8 +35,7 @@ export default function Simulador({ pedidoId }: { pedidoId: number }) {
     if (paso === null) return;
     const [lat, lng] = RUTA[paso];
     const payload = enBinario ? empacar([[lat, lng]]) : { lat, lng };
-    // Clase 6, bloque 2: aquí se manda el aviso por el canal. Por ahora solo se ve en la consola.
-    console.log("Aviso listo para mandar:", payload);
+    canal.current?.send({ type: "broadcast", event: "posicion", payload });
   }, [paso, enBinario]);
 
   const posicion = paso === null ? null : RUTA[paso];
