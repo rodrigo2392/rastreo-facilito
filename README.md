@@ -61,9 +61,9 @@ La llave secreta (`sb_secret_`) se salta RLS: nunca va en el navegador ni en el 
 
 ## Los puntos de cada clase
 
-Cada clase tiene tres puntos guardados en etiquetas de git, que van apareciendo conforme avanza el curso:
+Cada clase tiene tres puntos, cada uno en su propio branch:
 
-| Etiqueta | Qué trae |
+| Branch | Qué trae |
 |---|---|
 | `clase-3-inicio` | Con lo que arranca la clase: lo de la clase anterior más las piezas que ya vienen hechas |
 | `clase-3-rescate` | Cómo queda a la mitad de la clase |
@@ -74,13 +74,13 @@ Sirven para comparar con lo tuyo al hacer la tarea. La clase 4 no tiene punto a 
 Para cambiarte a un punto, por ejemplo al inicio de la clase 3:
 
 ```
-git fetch --tags
+git fetch
 git checkout -f clase-3-inicio
 ```
 
-`-f` descarta lo que hayas cambiado en los archivos del proyecto; si quieres conservar tu tarea, antes copia tu carpeta. Tu `.env.local` no se toca. Git te va a decir que estás en "detached HEAD": es normal.
+`-f` descarta lo que hayas cambiado en los archivos del proyecto; si quieres conservar tu tarea, antes copia tu carpeta. Tu `.env.local` no se toca.
 
-Sin git: en GitHub, en Tags, baja el zip de la etiqueta, descomprímelo, copia ahí tu `.env.local` y corre `npm install`.
+Sin git: en GitHub, elige el branch en el selector de branches, luego Code, Download ZIP; descomprímelo, copia ahí tu `.env.local` y corre `npm install`.
 
 Desde la clase 6 hay una librería nueva (la del mapa): corre `npm install` antes de `npm run dev`.
 
